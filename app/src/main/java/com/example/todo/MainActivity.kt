@@ -1,6 +1,7 @@
 package com.example.todo
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,14 @@ class MainActivity : AppCompatActivity() {
     private val adapter by lazy {
         TaskListAdapter()
     }
+    private val pref by lazy {
+        this.getPreferences(0)
+    }
+    private val editor by lazy {
+        pref.edit()
+    }
+
+    var memoSize: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +31,13 @@ class MainActivity : AppCompatActivity() {
 
         btn_add_task.setOnClickListener {
             adapter.addItem(TaskItem(et_add_task.text.toString()))
+
+            if (memoSize > 0) {
+                editor.putString("memo${adapter.items.size}", et_add_task.text.toString()).apply()
+                memoSize++
+                editor.putInt("memoSize", memoSize).apply()
+
+            }
         }
 //
 //        layout_task_container.setOnClickListener {
@@ -35,6 +51,13 @@ class MainActivity : AppCompatActivity() {
         rv_task_list.adapter = adapter
         rv_task_list.setHasFixedSize(true)
 
+        memoSize = pref.getInt("memoSize", 0)
+
+        if (memoSize > 0) {
+            for (i in 1..memoSize) {
+                adapter.addItem(TaskItem(pref.getString("memo${i}", "없음")!!))
+            }
+        }
 
         Toast.makeText(this, "환영합니다", Toast.LENGTH_SHORT).show()
     }

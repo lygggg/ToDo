@@ -25,6 +25,7 @@ class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         Log.d("onBindViewholder", ""+position)
         holder.tvTaskTitle.text = items[position].title
+
     }
 
     fun addItem(item: TaskItem) {
